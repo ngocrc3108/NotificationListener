@@ -10,7 +10,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 
-
 class MainActivity : Activity() {
     private var txtView: TextView? = null
     private var nReceiver: NotificationReceiver? = null
@@ -22,7 +21,7 @@ class MainActivity : Activity() {
         txtView = findViewById<View>(R.id.textView) as TextView
         nReceiver = NotificationReceiver()
         val filter = IntentFilter()
-        filter.addAction("com.kpbird.nlsexample.NOTIFICATION_LISTENER_EXAMPLE")
+        filter.addAction("CatchNotification")
         registerReceiver(nReceiver, filter)
     }
 
@@ -35,8 +34,7 @@ class MainActivity : Activity() {
         override fun onReceive(context: Context, intent: Intent) {
             val textData = intent.getStringExtra("text")
             val titleData = intent.getStringExtra("title")
-            var temp = "$titleData: $textData \n${txtView!!.text}"
-            txtView!!.text = temp
+            txtView!!.text = "$titleData: $textData \n${txtView!!.text}"
         }
     }
 }

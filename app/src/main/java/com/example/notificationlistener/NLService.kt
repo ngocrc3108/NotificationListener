@@ -10,7 +10,7 @@ class NLService : NotificationListenerService() {
         var titleData : String
         var textData : String
         val extras = sbn.notification.extras
-        val i = Intent("com.kpbird.nlsexample.NOTIFICATION_LISTENER_EXAMPLE")
+        val i = Intent("CatchNotification")
 
         if(sbn.packageName != "com.facebook.orca")
             return
