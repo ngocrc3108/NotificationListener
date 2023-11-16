@@ -9,22 +9,11 @@ import android.content.IntentFilter
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
-import okhttp3.Call
-import okhttp3.Callback
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.Response
-import java.io.IOException
-import java.util.Objects
-
 
 class MainActivity : Activity() {
     private var txtView: TextView? = null
     private var nReceiver: NotificationReceiver? = null
-    //https://api.telegram.org/bot6170746237:AAGRau8vFZ_X3KMJHBMBygwJwZvJJ_3tDW0/sendMessage?chat_id=5318496948&text=Hello
-    private val appUrl = "https://api.telegram.org/bot6170746237:AAGRau8vFZ_X3KMJHBMBygwJwZvJJ_3tDW0/sendMessage?chat_id=5318496948&text=Hello"
-    var client = OkHttpClient()
-    @SuppressLint("MissingInflatedId")
+    @SuppressLint("MissingInflatedId", "UnspecifiedRegisterReceiverFlag")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -34,7 +23,6 @@ class MainActivity : Activity() {
         val filter = IntentFilter()
         filter.addAction("CatchNotification")
         registerReceiver(nReceiver, filter)
-
     }
 
     override fun onDestroy() {
@@ -43,23 +31,11 @@ class MainActivity : Activity() {
     }
 
     internal inner class NotificationReceiver : BroadcastReceiver() {
+        @SuppressLint("SetTextI18n")
         override fun onReceive(context: Context, intent: Intent) {
-            val textData = intent.getStringExtra("text")
+            val textData = intent.getStringExtra("key")
             val titleData = intent.getStringExtra("title")
             txtView!!.text = "$titleData: $textData \n${txtView!!.text}"
-
-            val request = Request.Builder()
-                .url(appUrl)
-                .build()
-            client.newCall(request).enqueue(object : Callback {
-                override fun onFailure(call: Call, e: IOException) {
-                    //txtView!!.text = "onFailure \n${txtView!!.text}"
-                }
-
-                override fun onResponse(call: Call, response: Response) {
-
-                }
-            })
         }
     }
 }
