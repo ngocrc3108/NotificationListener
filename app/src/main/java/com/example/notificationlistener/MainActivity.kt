@@ -33,9 +33,10 @@ class MainActivity : Activity() {
     internal inner class NotificationReceiver : BroadcastReceiver() {
         @SuppressLint("SetTextI18n")
         override fun onReceive(context: Context, intent: Intent) {
-            val textData = intent.getStringExtra("key")
-            val titleData = intent.getStringExtra("title")
-            txtView!!.text = "$titleData: $textData \n${txtView!!.text}"
+            val key = intent.getStringExtra("key")
+            val title = intent.getStringExtra("title")
+            val amount = intent.getStringExtra("amount")
+            txtView!!.text = "$title: $key $amount \n${txtView!!.text}"
         }
     }
 }

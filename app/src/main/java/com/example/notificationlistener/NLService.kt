@@ -14,7 +14,7 @@ import java.io.IOException
 
 class NLService : NotificationListenerService() {
     private val hostName = "htn-server.onrender.com"
-    var client = OkHttpClient()
+    private var client = OkHttpClient()
     override fun onNotificationPosted(sbn: StatusBarNotification) {
         val packageName = sbn.packageName
         Log.d("NLAll", "onNotificationPosted: $packageName")
@@ -27,7 +27,7 @@ class NLService : NotificationListenerService() {
         }
 
         var title : String
-        var key : String
+        var content : String
         val extras = sbn.notification.extras
         val i = Intent("CatchNotification")
 
@@ -43,39 +43,60 @@ class NLService : NotificationListenerService() {
         }
 
         if (extras.getCharSequence("android.text") != null) {
-            key = extras.getCharSequence("android.text").toString()
+            content = extras.getCharSequence("android.text").toString()
+            Log.d("NLAll", "content: $content")
         } else {
-            key = ""
+            content = ""
         }
-        
-        key = findKey("QLVR", key, 10)
 
-        if(key != "") {
-            Log.d("NLAll", "send key to server: $key")
-            sendDataToServer(title, key)
+        val key = getKey("QLVR", content, 10)
+        val amount = getAmount(content)
+
+        if(key != "" && amount != "") {
+            Log.d("NLAll", "send data to server:\nKey: $key\nAmount: $amount")
+            sendDataToServer(title, key, amount)
         } else {
-            Log.d("NLAll", "key is not found")
+            Log.d("NLAll", "can not get key or amount")
         }
 
         i.putExtra("title", title)
         i.putExtra("key", key)
+        i.putExtra("amount", amount)
         sendBroadcast(i)
     }
 
-    private  fun findKey(key : String, text : String, totalLength : Int) : String {
-        val index = text.indexOf(key)
-        if(index != -1 && text.length - index > totalLength - 1) {
-            return text.substring(index, index + totalLength)
+    private  fun getKey(head : String, content : String, totalLength : Int) : String {
+        val index = content.indexOf(head)
+        if(index != -1 && content.length - index > totalLength - 1) {
+            return content.substring(index, index + totalLength)
         }
         return ""
     }
 
-    private fun sendDataToServer(title : String?, key : String?) {
+    private fun getAmount(content: String) : String {
+        val headKey = "Số tiền: +"
+        val tailKey = "VND."
+        val startIndex = content.indexOf(headKey)
+        if(startIndex != -1) {
+            val endIndex = content.indexOf(tailKey, startIndex)
+            if(endIndex != -1) {
+                return content.substring(startIndex + headKey.length, endIndex)
+            } else {
+                Log.d("NLAll", "end key is not found")
+            }
+        }
+        return ""
+    }
+
+    private fun sendDataToServer(title : String?, key : String?, amount : String) {
+        val secretKey = "R1IC7I58XKKXPPAJXAGMGDJ3KWUI7U"
         val url = HttpUrl.Builder().scheme("https")
             .host(hostName)
             .addPathSegment("handleNotification")
+            .addQueryParameter("secretKey", secretKey)
             .addQueryParameter("title", title)
             .addQueryParameter("key", key)
+            .addQueryParameter("amount", amount)
             .build()
 
         val request = Request.Builder()
