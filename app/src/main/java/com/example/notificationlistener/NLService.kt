@@ -93,7 +93,7 @@ class NLService : NotificationListenerService() {
         val url = HttpUrl.Builder().scheme("https")
             .host(hostName)
             .addPathSegment("system")
-            .addPathSegment("handleNotification")
+            .addPathSegment("topup")
             .addQueryParameter("secretKey", secretKey)
             .addQueryParameter("title", title)
             .addQueryParameter("key", key)
@@ -103,6 +103,8 @@ class NLService : NotificationListenerService() {
         val request = Request.Builder()
             .url(url)
             .build()
+
+        Log.d("NLAll", "req $request")
 
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
