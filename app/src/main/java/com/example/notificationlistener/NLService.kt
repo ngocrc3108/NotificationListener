@@ -26,8 +26,8 @@ class NLService : NotificationListenerService() {
             return
         }
 
-        var title : String
-        var content : String
+        val title : String
+        val content : String
         val extras = sbn.notification.extras
         val i = Intent("CatchNotification")
 
@@ -92,6 +92,7 @@ class NLService : NotificationListenerService() {
         val secretKey = "R1IC7I58XKKXPPAJXAGMGDJ3KWUI7U"
         val url = HttpUrl.Builder().scheme("https")
             .host(hostName)
+            .addPathSegment("system")
             .addPathSegment("handleNotification")
             .addQueryParameter("secretKey", secretKey)
             .addQueryParameter("title", title)
