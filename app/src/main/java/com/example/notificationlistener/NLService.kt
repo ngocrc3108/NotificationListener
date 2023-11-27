@@ -49,7 +49,7 @@ class NLService : NotificationListenerService() {
             content = ""
         }
 
-        val key = getKey("QLVR", content, 10)
+        val key = getKey("CICO", content, 10)
         val amount = getAmount(content)
 
         if(key != "" && amount != "") {
@@ -59,7 +59,7 @@ class NLService : NotificationListenerService() {
             Log.d("NLAll", "can not get key or amount")
         }
 
-        i.putExtra("title", title)
+        //i.putExtra("title", title)
         i.putExtra("key", key)
         i.putExtra("amount", amount)
         sendBroadcast(i)

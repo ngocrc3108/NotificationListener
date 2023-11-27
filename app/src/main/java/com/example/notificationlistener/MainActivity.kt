@@ -34,9 +34,8 @@ class MainActivity : Activity() {
         @SuppressLint("SetTextI18n")
         override fun onReceive(context: Context, intent: Intent) {
             val key = intent.getStringExtra("key")
-            val title = intent.getStringExtra("title")
             val amount = intent.getStringExtra("amount")
-            txtView!!.text = "$title: $key $amount \n${txtView!!.text}"
+            txtView!!.text = "$key $amount \n${txtView!!.text}"
         }
     }
 }
